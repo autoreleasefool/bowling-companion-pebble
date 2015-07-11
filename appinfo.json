@@ -1,0 +1,22 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "joseph.roque-@hotmail.com",
+    "longName": "5 Pin Bowling Companion",
+    "projectType": "native",
+    "resources": {
+        "media": []
+    },
+    "sdkVersion": "3",
+    "shortName": "5 Pin Bowling Companion",
+    "targetPlatforms": [
+        "basalt"
+    ],
+    "uuid": "50638528-fbe2-4be2-86f6-97af37cc952e",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
