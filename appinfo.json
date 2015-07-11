@@ -7,7 +7,23 @@
     "longName": "5 Pin Bowling Companion",
     "projectType": "native",
     "resources": {
-        "media": []
+        "media": [
+            {
+                "file": "images/indicator.png",
+                "name": "IMAGE_INDICATOR",
+                "type": "png"
+            },
+            {
+                "file": "images/pin_black.png",
+                "name": "IMAGE_PIN_BLACK",
+                "type": "png"
+            },
+            {
+                "file": "images/pin_white.png",
+                "name": "IMAGE_PIN_WHITE",
+                "type": "png"
+            }
+        ]
     },
     "sdkVersion": "3",
     "shortName": "5 Pin Bowling Companion",

@@ -17,6 +17,7 @@ static void initialise_ui(void) {
 }
 
 static void destroy_ui(void) {
+  menu_layer_destroy(s_menu_layer);
   window_destroy(s_window);
 }
 
