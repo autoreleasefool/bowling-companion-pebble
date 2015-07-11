@@ -1,6 +1,6 @@
 #include <pebble.h>
-#include "bowler_list.h"
 #include "league_list.h"
+#include "series_list.h"
   
 #define NUM_MENU_SECTIONS 2
 #define NUM_FIRST_MENU_ITEMS 1
@@ -39,10 +39,10 @@ static int16_t menu_get_header_height_callback(MenuLayer *menu_layer, uint16_t s
   return MENU_CELL_BASIC_HEADER_HEIGHT;
 }
 
-static void menu_draw_header_callback(GContext* ctx, const Layer *cell_layer, uint16_t section_index, void *data) {
+static void menu_draw_header_callback(GContext *ctx, const Layer *cell_layer, uint16_t section_index, void *data) {
   switch (section_index) {
     case 0:
-      menu_cell_basic_header_draw(ctx, cell_layer, "Create new bowler");
+      menu_cell_basic_header_draw(ctx, cell_layer, "Create new league");
       break;
     case 1:
       menu_cell_basic_header_draw(ctx, cell_layer, "Choose existing");
@@ -50,20 +50,20 @@ static void menu_draw_header_callback(GContext* ctx, const Layer *cell_layer, ui
   }
 }
 
-static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuIndex *cell_index, void *data) {
+static void menu_draw_row_callback(GContext *ctx, const Layer *cell_layer, MenuIndex *cell_index, void *data) {
   switch (cell_index->section) {
     case 0:
       switch (cell_index->row) {
         case 0:
           // TODO: add 'plus' icon
-          menu_cell_basic_draw(ctx, cell_layer, "New Bowler", NULL, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, "New League", NULL, NULL);
           break;
       }
       break;
     case 1:
       switch (cell_index->row) {
         case 0:
-          menu_cell_basic_draw(ctx, cell_layer, "No bowlers", NULL, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, "No leagues", NULL, NULL);
           break;
       }
       break;
@@ -75,8 +75,7 @@ static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, v
     case 0:
       switch (cell_index->row) {
         case 0:
-          // todo: load next face
-          show_league_list();
+          show_series_list();
           break;
       }
       break;
@@ -105,7 +104,7 @@ static void handle_window_unload(Window* window) {
   destroy_ui();
 }
 
-void show_bowler_list(void) {
+void show_league_list(void) {
   initialise_ui();
   window_set_window_handlers(s_window, (WindowHandlers) {
     .load = handle_window_load,
@@ -114,6 +113,6 @@ void show_bowler_list(void) {
   window_stack_push(s_window, true);
 }
 
-void hide_bowler_list(void) {
+void hide_league_list(void) {
   window_stack_remove(s_window, true);
 }
