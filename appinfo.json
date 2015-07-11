@@ -9,6 +9,16 @@
     "resources": {
         "media": [
             {
+                "file": "images/plus_white.png",
+                "name": "IMAGE_PLUS_WHITE",
+                "type": "png"
+            },
+            {
+                "file": "images/plus_black.png",
+                "name": "IMAGE_PLUS_BLACK",
+                "type": "png"
+            },
+            {
                 "file": "images/indicator.png",
                 "name": "IMAGE_INDICATOR",
                 "type": "png"

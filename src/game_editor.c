@@ -209,8 +209,12 @@ static void destroy_ui(void) {
 }
 // END AUTO-GENERATED UI CODE
 
-static void initialise_custom_ui() {
+static void initialise_custom_ui(void) {
   s_res_image_pin_black = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_BLACK);
+}
+
+static void destroy_custom_ui(void) {
+  gbitmap_destroy(s_res_image_pin_black);
 }
 
 static void on_animation_stopped(Animation *anim, bool finished, void *context)
@@ -219,7 +223,7 @@ static void on_animation_stopped(Animation *anim, bool finished, void *context)
     property_animation_destroy((PropertyAnimation*) anim);
 }
 
-static void update_indicator_position() {
+static void update_indicator_position(void) {
   Layer *root_indicator_layer = bitmap_layer_get_layer(s_bitmap_indicator);
   GRect to_frame = GRect(0, 0, 0, 0);
   GRect from_frame = layer_get_frame(root_indicator_layer);
@@ -336,6 +340,7 @@ static void handle_window_load(Window* window) {
 
 static void handle_window_unload(Window* window) {
   destroy_ui();
+  destroy_custom_ui();
 }
 
 void show_game_editor(void) {
