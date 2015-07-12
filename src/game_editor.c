@@ -1,10 +1,18 @@
 #include <pebble.h>
 #include "game_editor.h"
+#include "utils.h"
   
-static int8_t s_current_pin = 0;
+static uint8_t s_current_pin = 0;
 static bool s_pin_knocked[5] = {false, false, false, false, false};
 static PropertyAnimation *s_property_animation;
 static GBitmap *s_res_image_pin_black;
+
+// game values
+static char* bowler_name;
+static char* league_name;
+static char* series_name;
+static char* game_title;
+static uint8_t currentGame = 0;
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -52,7 +60,7 @@ static void initialise_ui(void) {
   
   // s_textlayer_league
   s_textlayer_league = text_layer_create(GRect(5, 25, 100, 20));
-  text_layer_set_text(s_textlayer_league, "League");
+  text_layer_set_text(s_textlayer_league, league_name);
   text_layer_set_font(s_textlayer_league, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_league);
   
@@ -62,7 +70,6 @@ static void initialise_ui(void) {
   
   // s_textlayer_f1_score
   s_textlayer_f1_score = text_layer_create(GRect(0, 63, 47, 15));
-  text_layer_set_background_color(s_textlayer_f1_score, GColorBlack);
   text_layer_set_text(s_textlayer_f1_score, "999");
   text_layer_set_text_alignment(s_textlayer_f1_score, GTextAlignmentCenter);
   text_layer_set_font(s_textlayer_f1_score, s_res_gothic_14);
@@ -70,7 +77,6 @@ static void initialise_ui(void) {
   
   // s_textlayer_f2_score
   s_textlayer_f2_score = text_layer_create(GRect(48, 63, 48, 15));
-  text_layer_set_background_color(s_textlayer_f2_score, GColorBlack);
   text_layer_set_text(s_textlayer_f2_score, "999");
   text_layer_set_text_alignment(s_textlayer_f2_score, GTextAlignmentCenter);
   text_layer_set_font(s_textlayer_f2_score, s_res_gothic_14);
@@ -78,7 +84,6 @@ static void initialise_ui(void) {
   
   // s_textlayer_f3_score
   s_textlayer_f3_score = text_layer_create(GRect(97, 63, 47, 15));
-  text_layer_set_background_color(s_textlayer_f3_score, GColorBlack);
   text_layer_set_text(s_textlayer_f3_score, "999");
   text_layer_set_text_alignment(s_textlayer_f3_score, GTextAlignmentCenter);
   text_layer_set_font(s_textlayer_f3_score, s_res_gothic_14);
@@ -86,7 +91,6 @@ static void initialise_ui(void) {
   
   // s_textlayer_f1_b1
   s_textlayer_f1_b1 = text_layer_create(GRect(0, 45, 15, 15));
-  text_layer_set_background_color(s_textlayer_f1_b1, GColorBlack);
   text_layer_set_text(s_textlayer_f1_b1, "Hp");
   text_layer_set_text_alignment(s_textlayer_f1_b1, GTextAlignmentCenter);
   text_layer_set_font(s_textlayer_f1_b1, s_res_gothic_14);
@@ -94,7 +98,6 @@ static void initialise_ui(void) {
   
   // s_textlayer_f1_b2
   s_textlayer_f1_b2 = text_layer_create(GRect(16, 45, 15, 15));
-  text_layer_set_background_color(s_textlayer_f1_b2, GColorBlack);
   text_layer_set_text(s_textlayer_f1_b2, "Hp");
   text_layer_set_text_alignment(s_textlayer_f1_b2, GTextAlignmentCenter);
   text_layer_set_font(s_textlayer_f1_b2, s_res_gothic_14);
@@ -102,7 +105,6 @@ static void initialise_ui(void) {
   
   // s_textlayer_f1_b3
   s_textlayer_f1_b3 = text_layer_create(GRect(32, 45, 15, 15));
-  text_layer_set_background_color(s_textlayer_f1_b3, GColorBlack);
   text_layer_set_text(s_textlayer_f1_b3, "Hp");
   text_layer_set_text_alignment(s_textlayer_f1_b3, GTextAlignmentCenter);
   text_layer_set_font(s_textlayer_f1_b3, s_res_gothic_14);
@@ -110,7 +112,6 @@ static void initialise_ui(void) {
   
   // s_textlayer_f2_b1
   s_textlayer_f2_b1 = text_layer_create(GRect(48, 45, 15, 15));
-  text_layer_set_background_color(s_textlayer_f2_b1, GColorBlack);
   text_layer_set_text(s_textlayer_f2_b1, "Hp");
   text_layer_set_text_alignment(s_textlayer_f2_b1, GTextAlignmentCenter);
   text_layer_set_font(s_textlayer_f2_b1, s_res_gothic_14);
@@ -118,34 +119,30 @@ static void initialise_ui(void) {
   
   // s_textlayer_f2_b2
   s_textlayer_f2_b2 = text_layer_create(GRect(64, 45, 15, 15));
-  text_layer_set_background_color(s_textlayer_f2_b2, GColorBlack);
   text_layer_set_text(s_textlayer_f2_b2, "Hp");
+  text_layer_set_font(s_textlayer_f2_b2, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_f2_b2);
   
   // s_textlayer_f2_b3
   s_textlayer_f2_b3 = text_layer_create(GRect(80, 45, 15, 15));
-  text_layer_set_background_color(s_textlayer_f2_b3, GColorBlack);
   text_layer_set_text(s_textlayer_f2_b3, "Hp");
   text_layer_set_font(s_textlayer_f2_b3, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_f2_b3);
   
   // s_textlayer_f3_b1
   s_textlayer_f3_b1 = text_layer_create(GRect(96, 45, 15, 15));
-  text_layer_set_background_color(s_textlayer_f3_b1, GColorBlack);
   text_layer_set_text(s_textlayer_f3_b1, "Hp");
   text_layer_set_font(s_textlayer_f3_b1, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_f3_b1);
   
   // s_textlayer_f3_b2
   s_textlayer_f3_b2 = text_layer_create(GRect(112, 45, 15, 15));
-  text_layer_set_background_color(s_textlayer_f3_b2, GColorBlack);
   text_layer_set_text(s_textlayer_f3_b2, "Hp");
   text_layer_set_font(s_textlayer_f3_b2, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_f3_b2);
   
   // s_textlayer_f3_b3
   s_textlayer_f3_b3 = text_layer_create(GRect(128, 45, 15, 15));
-  text_layer_set_background_color(s_textlayer_f3_b3, GColorBlack);
   text_layer_set_text(s_textlayer_f3_b3, "Hp");
   text_layer_set_font(s_textlayer_f3_b3, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_f3_b3);
@@ -219,8 +216,36 @@ static void destroy_custom_ui(void) {
 
 static void on_animation_stopped(Animation *anim, bool finished, void *context)
 {
-    //Free the memory used by the Animation
-    property_animation_destroy((PropertyAnimation*) anim);
+  //Free the memory used by the Animation
+  property_animation_destroy((PropertyAnimation*) anim);
+}
+
+static void set_game(uint8_t newGame) {
+  currentGame = newGame + 1;
+  const char* game_boiler = "Game #";
+  const char* game_num = itoa(currentGame);
+
+  if (game_title) {
+    free(game_title);
+    game_title = NULL;
+  }
+  game_title = (char*) malloc(strlen(game_boiler) + strlen(game_num) + 1);
+  strcpy(game_title, game_boiler);
+  strcat(game_title, game_num);
+  text_layer_set_text(s_textlayer_gamenum, game_title);
+  currentGame--;
+}
+
+static void update_pin_status(BitmapLayer *pin_bitmap, int8_t pin_to_update, bool knocked) {
+  if (s_pin_knocked[pin_to_update] == knocked)
+    return;
+  
+  s_pin_knocked[pin_to_update] = knocked;
+  if (knocked) {
+    bitmap_layer_set_bitmap(pin_bitmap, s_res_image_pin_black);
+  } else {
+    bitmap_layer_set_bitmap(pin_bitmap, s_res_image_pin_white);
+  }
 }
 
 static void update_indicator_position(void) {
@@ -257,9 +282,10 @@ static void update_indicator_position(void) {
 }
 
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
-  s_current_pin--;
-  if (s_current_pin == -1)
+  if (s_current_pin == 0)
     s_current_pin = 4;
+  else
+    s_current_pin--;
   update_indicator_position();
 }
 
@@ -307,13 +333,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
       break;
   }
 
-  if (s_pin_knocked[s_current_pin]) {
-    s_pin_knocked[s_current_pin] = false;
-    bitmap_layer_set_bitmap(active_pin, s_res_image_pin_white);
-  } else {
-    s_pin_knocked[s_current_pin] = true;
-    bitmap_layer_set_bitmap(active_pin, s_res_image_pin_black);
-  }
+  update_pin_status(active_pin, s_current_pin, !s_pin_knocked[s_current_pin]);
 }
 
 static void select_long_click_handler(ClickRecognizerRef recognizer, void *context) {
@@ -321,7 +341,13 @@ static void select_long_click_handler(ClickRecognizerRef recognizer, void *conte
 }
 
 static void select_long_click_release_handler(ClickRecognizerRef recognizer, void *context) {
-  // TODO: strike, then next frame
+  update_pin_status(s_bitmap_pin_0, 0x0, true);
+  update_pin_status(s_bitmap_pin_1, 0x1, true);
+  update_pin_status(s_bitmap_pin_2, 0x2, true);
+  update_pin_status(s_bitmap_pin_3, 0x3, true);
+  update_pin_status(s_bitmap_pin_4, 0x4, true);
+  
+  // TODO: go to next frame
 }
 
 static void click_config_provider(void *context) {
@@ -335,7 +361,7 @@ static void click_config_provider(void *context) {
 }
 
 static void handle_window_load(Window* window) {
-  
+  set_game(0);
 }
 
 static void handle_window_unload(Window* window) {
@@ -343,7 +369,22 @@ static void handle_window_unload(Window* window) {
   destroy_custom_ui();
 }
 
-void show_game_editor(void) {
+void show_game_editor(char* new_bowler_name, char* new_league_name, char* new_series_name) {
+  if (strcmp(new_bowler_name, NEW_BOWLER) == 0)
+    bowler_name = DEFAULT_BOWLER_NAME;
+  else
+    bowler_name = new_bowler_name;
+  
+  if (strcmp(new_league_name, NEW_EVENT) == 0)
+    league_name = DEFAULT_EVENT_NAME;
+  else
+    league_name = new_league_name;
+  
+  if (strcmp(new_series_name, NEW_SERIES) == 0)
+    series_name = DEFAULT_SERIES_NAME;
+  else
+    series_name = new_series_name;
+  
   initialise_ui();
   initialise_custom_ui();
   window_set_window_handlers(s_window, (WindowHandlers) {

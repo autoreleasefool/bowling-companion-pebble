@@ -1,16 +1,21 @@
 #include <pebble.h>
 #include "series_list.h"
 #include "game_editor.h"
+#include "utils.h"
 
 #define NUM_MENU_SECTIONS 2
 #define NUM_FIRST_MENU_ITEMS 1
 #define NUM_SECOND_MENU_ITEMS 1
+#define NO_SERIES "No series"
 
 static Window *s_window;
 static MenuLayer *s_menu_layer;
 static GBitmap *s_res_image_plus_black;
 static GBitmap *s_res_image_plus_white;
+
 static bool s_new_series_selected = true;
+static char* bowler_name;
+static char* league_name;
 
 static void initialise_ui(void) {
   s_window = window_create();
@@ -50,14 +55,14 @@ static char* get_row_text(uint16_t section, uint16_t row) {
     case 0:
       switch (row) {
         case 0:
-          return "New series";
+          return NEW_SERIES;
         default:
           return "";
       }
     case 1:
       switch (row) {
         case 0:
-          return "No series";
+          return NO_SERIES;
         default:
           return "";
       }
@@ -112,14 +117,9 @@ static void menu_draw_row_callback(GContext *ctx, const Layer *cell_layer, MenuI
 }
 
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
-  switch (cell_index->section) {
-    case 0:
-      switch (cell_index->row) {
-        case 0:
-          show_game_editor();
-          break;
-      }
-      break;
+  char* row_text = get_row_text(cell_index->section, cell_index->row);
+  if (strcmp(row_text, NO_SERIES) != 0) {
+    show_game_editor(bowler_name, league_name, row_text);
   }
 }
 
@@ -151,7 +151,9 @@ static void handle_window_unload(Window* window) {
   destroy_custom_ui();
 }
 
-void show_series_list(void) {
+void show_series_list(char* new_bowler_name, char* new_league_name) {
+  bowler_name = new_bowler_name;
+  league_name = new_league_name;
   initialise_ui();
   initialise_custom_ui();
   window_set_window_handlers(s_window, (WindowHandlers) {

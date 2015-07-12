@@ -1,10 +1,12 @@
 #include <pebble.h>
 #include "bowler_list.h"
 #include "league_list.h"
+#include "utils.h"
   
 #define NUM_MENU_SECTIONS 2
 #define NUM_FIRST_MENU_ITEMS 1
 #define NUM_SECOND_MENU_ITEMS 1
+#define NO_BOWLERS "No bowlers"
 
 static Window *s_window;
 static MenuLayer *s_menu_layer;
@@ -50,14 +52,14 @@ static char* get_row_text(uint16_t section, uint16_t row) {
     case 0:
       switch (row) {
         case 0:
-          return "New bowler";
+          return NEW_BOWLER;
         default:
           return "";
       }
     case 1:
       switch (row) {
         case 0:
-          return "No bowlers";
+          return NO_BOWLERS;
         default:
           return "";
       }
@@ -112,14 +114,9 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
 }
 
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
-  switch (cell_index->section) {
-    case 0:
-      switch (cell_index->row) {
-        case 0:
-          show_league_list();
-          break;
-      }
-      break;
+  char* row_text = get_row_text(cell_index->section, cell_index->row);
+  if (strcmp(row_text, NO_BOWLERS) != 0) {
+    show_league_list(row_text);
   }
 }
 
