@@ -5,7 +5,15 @@
 static uint8_t s_current_pin = 0;
 static bool s_pin_knocked[5] = {false, false, false, false, false};
 static PropertyAnimation *s_property_animation;
-static GBitmap *s_res_image_pin_black;
+  
+#ifdef PBL_PLATFORM_APLITE
+static GBitmap *s_indicator_bitmap_black, *s_indicator_bitmap_white;
+static GBitmap *s_pin_enabled_bitmap_black, *s_pin_enabled_bitmap_white;
+static GBitmap *s_pin_disabled_bitmap_black, *s_pin_disabled_bitmap_white;
+#elif PBL_PLATFORM_BASALT
+static GBitmap *s_pin_enabled, *s_pin_disabled;
+static GBitmap *s_indicator_bitmap;
+#endif
 
 // game values
 static char* bowler_name;
@@ -18,8 +26,6 @@ static uint8_t currentGame = 0;
 static Window *s_window;
 static GFont s_res_gothic_18_bold;
 static GFont s_res_gothic_14;
-static GBitmap *s_res_image_pin_white;
-static GBitmap *s_res_image_indicator;
 static TextLayer *s_textlayer_gamenum;
 static TextLayer *s_textlayer_league;
 static Layer *s_layer_frame_bg;
@@ -47,11 +53,22 @@ static void initialise_ui(void) {
   #ifndef PBL_SDK_3
     window_set_fullscreen(s_window, true);
   #endif
+    
+  #ifdef PBL_PLATFORM_APLITE
+    s_pin_enabled_bitmap_black = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_ENABLED_BW_BLACK);
+    s_pin_enabled_bitmap_white = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_ENABLED_BW_WHITE);
+    s_pin_disabled_bitmap_black = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_DISABLED_BW_BLACK);
+    s_pin_disabled_bitmap_white = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_DISABLED_BW_WHITE);
+    s_indicator_bitmap_black = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_INDICATOR_BW_BLACK);
+    s_indicator_bitmap_white = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_INDICATOR_BW_WHITE);
+  #elif PBL_PLATFORM_BASALT
+    s_pin_enabled = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_ENABLED);
+    s_pin_disabled = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_DISABLED);
+    s_indicator_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_INDICATOR);
+  #endif
   
   s_res_gothic_18_bold = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
   s_res_gothic_14 = fonts_get_system_font(FONT_KEY_GOTHIC_14);
-  s_res_image_pin_white = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_WHITE);
-  s_res_image_indicator = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_INDICATOR);
   // s_textlayer_gamenum
   s_textlayer_gamenum = text_layer_create(GRect(5, 5, 100, 20));
   text_layer_set_text(s_textlayer_gamenum, "Game #");
@@ -149,33 +166,85 @@ static void initialise_ui(void) {
   
   // s_bitmap_pin_0
   s_bitmap_pin_0 = bitmap_layer_create(GRect(0, 92, 28, 60));
-  bitmap_layer_set_bitmap(s_bitmap_pin_0, s_res_image_pin_white);
+  #ifdef PBL_PLATFORM_APLITE
+    bitmap_layer_set_bitmap(s_bitmap_pin_0, s_pin_enabled_white);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_0, GCompOpAssign);
+  #elif PBL_PLATFORM_BASALT
+    bitmap_layer_set_bitmap(s_bitmap_pin_0, s_pin_enabled);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_0, GCompOpSet);
+  #endif
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_pin_0);
   
   // s_bitmap_pin_1
   s_bitmap_pin_1 = bitmap_layer_create(GRect(29, 92, 28, 60));
-  bitmap_layer_set_bitmap(s_bitmap_pin_1, s_res_image_pin_white);
+  #ifdef PBL_PLATFORM_APLITE
+    bitmap_layer_set_bitmap(s_bitmap_pin_1, s_pin_enabled_white);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_1, GCompOpAssign);
+  #elif PBL_PLATFORM_BASALT
+    bitmap_layer_set_bitmap(s_bitmap_pin_1, s_pin_enabled);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_1, GCompOpSet);
+  #endif
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_pin_1);
   
   // s_bitmap_pin_2
   s_bitmap_pin_2 = bitmap_layer_create(GRect(58, 92, 28, 60));
-  bitmap_layer_set_bitmap(s_bitmap_pin_2, s_res_image_pin_white);
+  #ifdef PBL_PLATFORM_APLITE
+    bitmap_layer_set_bitmap(s_bitmap_pin_2, s_pin_enabled_white);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_2, GCompOpAssign);
+  #elif PBL_PLATFORM_BASALT
+    bitmap_layer_set_bitmap(s_bitmap_pin_2, s_pin_enabled);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_2, GCompOpSet);
+  #endif
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_pin_2);
   
   // s_bitmap_pin_3
   s_bitmap_pin_3 = bitmap_layer_create(GRect(87, 92, 28, 60));
-  bitmap_layer_set_bitmap(s_bitmap_pin_3, s_res_image_pin_white);
+  #ifdef PBL_PLATFORM_APLITE
+    bitmap_layer_set_bitmap(s_bitmap_pin_3, s_pin_enabled_white);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_3, GCompOpAssign);
+  #elif PBL_PLATFORM_BASALT
+    bitmap_layer_set_bitmap(s_bitmap_pin_3, s_pin_enabled);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_3, GCompOpSet);
+  #endif
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_pin_3);
   
   // s_bitmap_pin_4
   s_bitmap_pin_4 = bitmap_layer_create(GRect(116, 92, 28, 60));
-  bitmap_layer_set_bitmap(s_bitmap_pin_4, s_res_image_pin_white);
+  #ifdef PBL_PLATFORM_APLITE
+    bitmap_layer_set_bitmap(s_bitmap_pin_4, s_pin_enabled_white);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_4, GCompOpAssign);
+  #elif PBL_PLATFORM_BASALT
+    bitmap_layer_set_bitmap(s_bitmap_pin_4, s_pin_enabled);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_4, GCompOpSet);
+  #endif
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_pin_4);
   
   // s_bitmap_indicator
   s_bitmap_indicator = bitmap_layer_create(GRect(0, 153, 28, 15));
-  bitmap_layer_set_bitmap(s_bitmap_indicator, s_res_image_indicator);
+  #ifdef PBL_PLATFORM_APLITE
+    bitmap_layer_set_bitmap(s_bitmap_indicator, s_indicator_bitmap_white);
+    bitmap_layer_set_compositing_mode(s_bitmap_indicator, GCompOpAssign);
+  #elif PBL_PLATFORM_BASALT
+    bitmap_layer_set_bitmap(s_bitmap_indicator, s_indicator_bitmap);
+    bitmap_layer_set_compositing_mode(s_bitmap_indicator, GCompOpSet);
+  #endif
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_indicator);
+  
+  #ifdef PBL_PLATFORM_APLITE
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_0, GCompOpAssign);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_1, GCompOpAssign);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_2, GCompOpAssign);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_3, GCompOpAssign);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_4, GCompOpAssign);
+    bitmap_layer_set_compositing_mode(s_bitmap_indicator, GCompOpAssign);
+  #elif PBL_PLATFORM_BASALT
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_0, GCompOpSet);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_1, GCompOpSet);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_2, GCompOpSet);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_3, GCompOpSet);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_4, GCompOpSet);
+    bitmap_layer_set_compositing_mode(s_bitmap_indicator, GCompOpSet);
+  #endif
 }
 
 static void destroy_ui(void) {
@@ -201,18 +270,21 @@ static void destroy_ui(void) {
   bitmap_layer_destroy(s_bitmap_pin_3);
   bitmap_layer_destroy(s_bitmap_pin_4);
   bitmap_layer_destroy(s_bitmap_indicator);
-  gbitmap_destroy(s_res_image_pin_white);
-  gbitmap_destroy(s_res_image_indicator);
+  
+  #ifdef PBL_PLATFORM_APLITE
+    gbitmap_destroy(s_pin_enabled_bitmap_black);
+    gbitmap_destroy(s_pin_enabled_bitmap_white);
+    gbitmap_destroy(s_pin_disabled_bitmap_black);
+    gbitmap_destroy(s_pin_disabled_bitmap_white);
+    gbitmap_destroy(s_indicator_bitmap_black);
+    gbitmap_destroy(s_indicator_bitmap_white);
+  #elif PBL_PLATFORM_BASALT
+    gbitmap_destroy(s_pin_enabled);
+    gbitmap_destroy(s_pin_disabled);
+    gbitmap_destroy(s_indicator_bitmap);
+  #endif
 }
 // END AUTO-GENERATED UI CODE
-
-static void initialise_custom_ui(void) {
-  s_res_image_pin_black = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_BLACK);
-}
-
-static void destroy_custom_ui(void) {
-  gbitmap_destroy(s_res_image_pin_black);
-}
 
 static void on_animation_stopped(Animation *anim, bool finished, void *context)
 {
@@ -241,11 +313,11 @@ static void update_pin_status(BitmapLayer *pin_bitmap, int8_t pin_to_update, boo
     return;
   
   s_pin_knocked[pin_to_update] = knocked;
-  if (knocked) {
+  /*if (knocked) {
     bitmap_layer_set_bitmap(pin_bitmap, s_res_image_pin_black);
   } else {
     bitmap_layer_set_bitmap(pin_bitmap, s_res_image_pin_white);
-  }
+  }*/
 }
 
 static void update_indicator_position(void) {
@@ -366,7 +438,6 @@ static void handle_window_load(Window* window) {
 
 static void handle_window_unload(Window* window) {
   destroy_ui();
-  destroy_custom_ui();
 }
 
 void show_game_editor(char* new_bowler_name, char* new_league_name, char* new_series_name) {
@@ -386,7 +457,6 @@ void show_game_editor(char* new_bowler_name, char* new_league_name, char* new_se
     series_name = new_series_name;
   
   initialise_ui();
-  initialise_custom_ui();
   window_set_window_handlers(s_window, (WindowHandlers) {
     .load = handle_window_load,
     .unload = handle_window_unload,

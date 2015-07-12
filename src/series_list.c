@@ -10,8 +10,12 @@
 
 static Window *s_window;
 static MenuLayer *s_menu_layer;
-static GBitmap *s_res_image_plus_black;
-static GBitmap *s_res_image_plus_white;
+
+#ifdef PBL_PLATFORM_APLITE
+static GBitmap *s_plus_bitmap_white, *s_plus_bitmap_black;
+#elif PBL_PLATFORM_BASALT
+static GBitmap *s_plus_bitmap;
+#endif
 
 static bool s_new_series_selected = true;
 static char* bowler_name;
@@ -22,21 +26,25 @@ static void initialise_ui(void) {
   #ifndef PBL_SDK_3
     window_set_fullscreen(s_window, true);
   #endif
+    
+  #ifdef PBL_PLATFORM_APLITE
+    s_plus_bitmap_white = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PLUS_BW_WHITE);
+    s_plus_bitmap_black = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PLUS_BW_BLACK);
+  #elif PBL_PLATFORM_BASALT
+    s_plus_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PLUS);
+  #endif
 }
 
 static void destroy_ui(void) {
   menu_layer_destroy(s_menu_layer);
   window_destroy(s_window);
-}
-
-static void initialise_custom_ui(void) {
-  s_res_image_plus_black = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PLUS_BLACK);
-  s_res_image_plus_white = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PLUS_WHITE);
-}
-
-static void destroy_custom_ui(void) {
-  gbitmap_destroy(s_res_image_plus_black);
-  gbitmap_destroy(s_res_image_plus_white);
+  
+  #ifdef PBL_PLATFORM_APLITE
+    gbitmap_destroy(s_plus_bitmap_white);
+    gbitmap_destroy(s_plus_bitmap_black);
+  #elif PBL_PLATFORM_BASALT
+    gbitmap_destroy(s_plus_bitmap);
+  #endif
 }
 
 static char* get_header_text(uint16_t section_index) {
@@ -78,10 +86,14 @@ static char* get_row_subtitle(uint16_t section, uint16_t row) {
 
 static GBitmap* get_row_icon(uint16_t section, uint16_t row) {
   if (section == 0 && row == 0) {
-    if (s_new_series_selected)
-      return s_res_image_plus_white;
-    else
-      return s_res_image_plus_black;
+    #ifdef PBL_PLATFORM_APLITE
+      if (s_new_series_selected)
+        return s_plus_bitmap_white;
+      else
+        return s_plus_bitmap_black;
+    #elif PBL_PLATFORM_BASALT
+      return s_plus_bitmap;
+    #endif
   } else {
     return NULL;
   }
@@ -148,14 +160,12 @@ static void handle_window_load(Window* window) {
 
 static void handle_window_unload(Window* window) {
   destroy_ui();
-  destroy_custom_ui();
 }
 
 void show_series_list(char* new_bowler_name, char* new_league_name) {
   bowler_name = new_bowler_name;
   league_name = new_league_name;
   initialise_ui();
-  initialise_custom_ui();
   window_set_window_handlers(s_window, (WindowHandlers) {
     .load = handle_window_load,
     .unload = handle_window_unload,
