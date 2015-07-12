@@ -6,13 +6,12 @@ static uint8_t s_current_pin = 0;
 static bool s_pin_knocked[5] = {false, false, false, false, false};
 static PropertyAnimation *s_property_animation;
   
+static GBitmap *s_indicator_bitmap;
 #ifdef PBL_PLATFORM_APLITE
-static GBitmap *s_indicator_bitmap_black, *s_indicator_bitmap_white;
 static GBitmap *s_pin_enabled_bitmap_black, *s_pin_enabled_bitmap_white;
 static GBitmap *s_pin_disabled_bitmap_black, *s_pin_disabled_bitmap_white;
 #elif PBL_PLATFORM_BASALT
 static GBitmap *s_pin_enabled, *s_pin_disabled;
-static GBitmap *s_indicator_bitmap;
 #endif
 
 // game values
@@ -54,17 +53,15 @@ static void initialise_ui(void) {
     window_set_fullscreen(s_window, true);
   #endif
     
+  s_indicator_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_INDICATOR);
   #ifdef PBL_PLATFORM_APLITE
-    s_pin_enabled_bitmap_black = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_ENABLED_BW_BLACK);
-    s_pin_enabled_bitmap_white = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_ENABLED_BW_WHITE);
-    s_pin_disabled_bitmap_black = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_DISABLED_BW_BLACK);
-    s_pin_disabled_bitmap_white = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_DISABLED_BW_WHITE);
-    s_indicator_bitmap_black = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_INDICATOR_BW_BLACK);
-    s_indicator_bitmap_white = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_INDICATOR_BW_WHITE);
+    s_pin_enabled_bitmap_black = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_ENABLED);
+    s_pin_enabled_bitmap_white = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_ENABLED);
+    s_pin_disabled_bitmap_black = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_DISABLED);
+    s_pin_disabled_bitmap_white = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_DISABLED);
   #elif PBL_PLATFORM_BASALT
     s_pin_enabled = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_ENABLED);
     s_pin_disabled = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_DISABLED);
-    s_indicator_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_INDICATOR);
   #endif
   
   s_res_gothic_18_bold = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
@@ -166,78 +163,47 @@ static void initialise_ui(void) {
   
   // s_bitmap_pin_0
   s_bitmap_pin_0 = bitmap_layer_create(GRect(0, 92, 28, 60));
-  #ifdef PBL_PLATFORM_APLITE
-    bitmap_layer_set_bitmap(s_bitmap_pin_0, s_pin_enabled_white);
-    bitmap_layer_set_compositing_mode(s_bitmap_pin_0, GCompOpAssign);
-  #elif PBL_PLATFORM_BASALT
-    bitmap_layer_set_bitmap(s_bitmap_pin_0, s_pin_enabled);
-    bitmap_layer_set_compositing_mode(s_bitmap_pin_0, GCompOpSet);
-  #endif
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_pin_0);
   
   // s_bitmap_pin_1
   s_bitmap_pin_1 = bitmap_layer_create(GRect(29, 92, 28, 60));
-  #ifdef PBL_PLATFORM_APLITE
-    bitmap_layer_set_bitmap(s_bitmap_pin_1, s_pin_enabled_white);
-    bitmap_layer_set_compositing_mode(s_bitmap_pin_1, GCompOpAssign);
-  #elif PBL_PLATFORM_BASALT
-    bitmap_layer_set_bitmap(s_bitmap_pin_1, s_pin_enabled);
-    bitmap_layer_set_compositing_mode(s_bitmap_pin_1, GCompOpSet);
-  #endif
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_pin_1);
   
   // s_bitmap_pin_2
   s_bitmap_pin_2 = bitmap_layer_create(GRect(58, 92, 28, 60));
-  #ifdef PBL_PLATFORM_APLITE
-    bitmap_layer_set_bitmap(s_bitmap_pin_2, s_pin_enabled_white);
-    bitmap_layer_set_compositing_mode(s_bitmap_pin_2, GCompOpAssign);
-  #elif PBL_PLATFORM_BASALT
-    bitmap_layer_set_bitmap(s_bitmap_pin_2, s_pin_enabled);
-    bitmap_layer_set_compositing_mode(s_bitmap_pin_2, GCompOpSet);
-  #endif
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_pin_2);
   
   // s_bitmap_pin_3
   s_bitmap_pin_3 = bitmap_layer_create(GRect(87, 92, 28, 60));
-  #ifdef PBL_PLATFORM_APLITE
-    bitmap_layer_set_bitmap(s_bitmap_pin_3, s_pin_enabled_white);
-    bitmap_layer_set_compositing_mode(s_bitmap_pin_3, GCompOpAssign);
-  #elif PBL_PLATFORM_BASALT
-    bitmap_layer_set_bitmap(s_bitmap_pin_3, s_pin_enabled);
-    bitmap_layer_set_compositing_mode(s_bitmap_pin_3, GCompOpSet);
-  #endif
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_pin_3);
   
   // s_bitmap_pin_4
   s_bitmap_pin_4 = bitmap_layer_create(GRect(116, 92, 28, 60));
-  #ifdef PBL_PLATFORM_APLITE
-    bitmap_layer_set_bitmap(s_bitmap_pin_4, s_pin_enabled_white);
-    bitmap_layer_set_compositing_mode(s_bitmap_pin_4, GCompOpAssign);
-  #elif PBL_PLATFORM_BASALT
-    bitmap_layer_set_bitmap(s_bitmap_pin_4, s_pin_enabled);
-    bitmap_layer_set_compositing_mode(s_bitmap_pin_4, GCompOpSet);
-  #endif
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_pin_4);
   
   // s_bitmap_indicator
   s_bitmap_indicator = bitmap_layer_create(GRect(0, 153, 28, 15));
-  #ifdef PBL_PLATFORM_APLITE
-    bitmap_layer_set_bitmap(s_bitmap_indicator, s_indicator_bitmap_white);
-    bitmap_layer_set_compositing_mode(s_bitmap_indicator, GCompOpAssign);
-  #elif PBL_PLATFORM_BASALT
-    bitmap_layer_set_bitmap(s_bitmap_indicator, s_indicator_bitmap);
-    bitmap_layer_set_compositing_mode(s_bitmap_indicator, GCompOpSet);
-  #endif
+  bitmap_layer_set_bitmap(s_bitmap_indicator, s_indicator_bitmap);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_indicator);
   
   #ifdef PBL_PLATFORM_APLITE
-    bitmap_layer_set_compositing_mode(s_bitmap_pin_0, GCompOpAssign);
-    bitmap_layer_set_compositing_mode(s_bitmap_pin_1, GCompOpAssign);
-    bitmap_layer_set_compositing_mode(s_bitmap_pin_2, GCompOpAssign);
-    bitmap_layer_set_compositing_mode(s_bitmap_pin_3, GCompOpAssign);
-    bitmap_layer_set_compositing_mode(s_bitmap_pin_4, GCompOpAssign);
-    bitmap_layer_set_compositing_mode(s_bitmap_indicator, GCompOpAssign);
+    bitmap_layer_set_bitmap(s_bitmap_pin_0, s_pin_enabled_bitmap_white);
+    bitmap_layer_set_bitmap(s_bitmap_pin_1, s_pin_enabled_bitmap_white);
+    bitmap_layer_set_bitmap(s_bitmap_pin_2, s_pin_enabled_bitmap_white);
+    bitmap_layer_set_bitmap(s_bitmap_pin_3, s_pin_enabled_bitmap_white);
+    bitmap_layer_set_bitmap(s_bitmap_pin_4, s_pin_enabled_bitmap_white);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_0, GCompOpAnd);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_1, GCompOpAnd);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_2, GCompOpAnd);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_3, GCompOpAnd);
+    bitmap_layer_set_compositing_mode(s_bitmap_pin_4, GCompOpAnd);
+    bitmap_layer_set_compositing_mode(s_bitmap_indicator, GCompOpAnd);
   #elif PBL_PLATFORM_BASALT
+    bitmap_layer_set_bitmap(s_bitmap_pin_0, s_pin_enabled);
+    bitmap_layer_set_bitmap(s_bitmap_pin_1, s_pin_enabled);
+    bitmap_layer_set_bitmap(s_bitmap_pin_2, s_pin_enabled);
+    bitmap_layer_set_bitmap(s_bitmap_pin_3, s_pin_enabled);
+    bitmap_layer_set_bitmap(s_bitmap_pin_4, s_pin_enabled);
     bitmap_layer_set_compositing_mode(s_bitmap_pin_0, GCompOpSet);
     bitmap_layer_set_compositing_mode(s_bitmap_pin_1, GCompOpSet);
     bitmap_layer_set_compositing_mode(s_bitmap_pin_2, GCompOpSet);
@@ -271,17 +237,15 @@ static void destroy_ui(void) {
   bitmap_layer_destroy(s_bitmap_pin_4);
   bitmap_layer_destroy(s_bitmap_indicator);
   
+  gbitmap_destroy(s_indicator_bitmap);
   #ifdef PBL_PLATFORM_APLITE
     gbitmap_destroy(s_pin_enabled_bitmap_black);
     gbitmap_destroy(s_pin_enabled_bitmap_white);
     gbitmap_destroy(s_pin_disabled_bitmap_black);
     gbitmap_destroy(s_pin_disabled_bitmap_white);
-    gbitmap_destroy(s_indicator_bitmap_black);
-    gbitmap_destroy(s_indicator_bitmap_white);
   #elif PBL_PLATFORM_BASALT
     gbitmap_destroy(s_pin_enabled);
     gbitmap_destroy(s_pin_disabled);
-    gbitmap_destroy(s_indicator_bitmap);
   #endif
 }
 // END AUTO-GENERATED UI CODE
@@ -290,6 +254,7 @@ static void on_animation_stopped(Animation *anim, bool finished, void *context)
 {
   //Free the memory used by the Animation
   property_animation_destroy((PropertyAnimation*) anim);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Animation destroyed");
 }
 
 static void set_game(uint8_t newGame) {
@@ -313,14 +278,23 @@ static void update_pin_status(BitmapLayer *pin_bitmap, int8_t pin_to_update, boo
     return;
   
   s_pin_knocked[pin_to_update] = knocked;
-  /*if (knocked) {
-    bitmap_layer_set_bitmap(pin_bitmap, s_res_image_pin_black);
+  if (knocked) {
+    #ifdef PBL_PLATFORM_APLITE
+      bitmap_layer_set_bitmap(pin_bitmap, s_pin_disabled_bitmap_white);
+    #elif PBL_PLATFORM_BASALT
+      bitmap_layer_set_bitmap(pin_bitmap, s_pin_disabled);
+    #endif
   } else {
-    bitmap_layer_set_bitmap(pin_bitmap, s_res_image_pin_white);
-  }*/
+    #ifdef PBL_PLATFORM_APLITE
+      bitmap_layer_set_bitmap(pin_bitmap, s_pin_enabled_bitmap_white);
+    #elif PBL_PLATFORM_BASALT
+      bitmap_layer_set_bitmap(pin_bitmap, s_pin_enabled);
+    #endif
+  }
 }
 
 static void update_indicator_position(void) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Animation broken");
   Layer *root_indicator_layer = bitmap_layer_get_layer(s_bitmap_indicator);
   GRect to_frame = GRect(0, 0, 0, 0);
   GRect from_frame = layer_get_frame(root_indicator_layer);

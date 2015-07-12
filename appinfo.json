@@ -9,51 +9,31 @@
     "resources": {
         "media": [
             {
-                "file": "images/indicator_color.png",
+                "file": "images/indicator.png",
                 "name": "IMAGE_INDICATOR",
                 "type": "png"
             },
             {
                 "file": "images/plus.png",
-                "name": "IMAGE_PLUS_BW",
-                "type": "png-trans"
-            },
-            {
-                "file": "images/plus_color.png",
                 "name": "IMAGE_PLUS",
                 "type": "png"
             },
             {
-                "file": "images/pin_enabled.png",
-                "name": "IMAGE_PIN_ENABLED_BW",
-                "type": "png-trans"
-            },
-            {
                 "file": "images/pin_disabled.png",
-                "name": "IMAGE_PIN_DISABLED_BW",
-                "type": "png-trans"
-            },
-            {
-                "file": "images/pin_enabled_color.png",
-                "name": "IMAGE_PIN_ENABLED",
-                "type": "png"
-            },
-            {
-                "file": "images/pin_disabled_color.png",
                 "name": "IMAGE_PIN_DISABLED",
                 "type": "png"
             },
             {
-                "file": "images/indicator.png",
-                "name": "IMAGE_INDICATOR_BW",
-                "type": "png-trans"
+                "file": "images/pin_enabled.png",
+                "name": "IMAGE_PIN_ENABLED",
+                "type": "png"
             }
         ]
     },
     "sdkVersion": "3",
     "shortName": "5 Pin Bowling Companion",
     "targetPlatforms": [
-        "aplite"
+        "basalt"
     ],
     "uuid": "50638528-fbe2-4be2-86f6-97af37cc952e",
     "versionLabel": "1.0",
