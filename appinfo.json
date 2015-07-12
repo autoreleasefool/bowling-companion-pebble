@@ -9,13 +9,13 @@
     "resources": {
         "media": [
             {
-                "file": "images/background.png",
-                "name": "IMAGE_BACKGROUND",
+                "file": "images/pin_disabled_color 3.03.53 PM.png",
+                "name": "IMAGE_PIN_DISABLED",
                 "type": "png"
             },
             {
-                "file": "images/indicator.png",
-                "name": "IMAGE_INDICATOR",
+                "file": "images/pin_enabled_color 3.03.53 PM.png",
+                "name": "IMAGE_PIN_ENABLED",
                 "type": "png"
             },
             {
@@ -24,13 +24,13 @@
                 "type": "png"
             },
             {
-                "file": "images/pin_disabled.png",
-                "name": "IMAGE_PIN_DISABLED",
+                "file": "images/indicator.png",
+                "name": "IMAGE_INDICATOR",
                 "type": "png"
             },
             {
-                "file": "images/pin_enabled.png",
-                "name": "IMAGE_PIN_ENABLED",
+                "file": "images/background.png",
+                "name": "IMAGE_BACKGROUND",
                 "type": "png"
             }
         ]
