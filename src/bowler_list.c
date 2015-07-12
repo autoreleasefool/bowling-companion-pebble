@@ -106,7 +106,9 @@ static void menu_draw_header_callback(GContext* ctx, const Layer *cell_layer, ui
 }
 
 static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuIndex *cell_index, void *data) {
-  menu_cell_basic_draw(ctx, cell_layer, get_row_text(cell_index->section, cell_index->row), get_row_subtitle(cell_index->section, cell_index->row), get_row_icon(cell_index->section, cell_index->row));
+  uint16_t section = cell_index->section;
+  uint16_t row = cell_index->row;
+  menu_cell_basic_draw(ctx, cell_layer, get_row_text(section, row), get_row_subtitle(section, row), get_row_icon(section, row));
 }
 
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
@@ -122,11 +124,7 @@ static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, v
 }
 
 static void menu_selection_changed_callback(MenuLayer *menu_layer, MenuIndex new_index, MenuIndex old_index, void *data) {
-  if (old_index.section == 0 && old_index.row == 0) {
-    s_new_bowler_selected = false;
-  } else if (new_index.section == 0 && new_index.row == 0) {
-    s_new_bowler_selected = true;
-  }
+  s_new_bowler_selected = (new_index.section == 0 && new_index.row == 0);
 }
 
 static void handle_window_load(Window* window) {

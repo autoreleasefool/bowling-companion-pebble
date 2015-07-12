@@ -176,7 +176,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_pin_4);
   
   // s_bitmap_indicator
-  s_bitmap_indicator = bitmap_layer_create(GRect(58, 153, 28, 15));
+  s_bitmap_indicator = bitmap_layer_create(GRect(0, 153, 28, 15));
   bitmap_layer_set_bitmap(s_bitmap_indicator, s_res_image_indicator);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_indicator);
 }
