@@ -7,6 +7,7 @@ static bool s_pin_knocked[5] = {false, false, false, false, false};
 static PropertyAnimation *s_property_animation;
   
 static GBitmap *s_indicator_bitmap;
+static GBitmap *s_background_bitmap;
 #ifdef PBL_PLATFORM_APLITE
 static GBitmap *s_pin_enabled_bitmap_black, *s_pin_enabled_bitmap_white;
 static GBitmap *s_pin_disabled_bitmap_black, *s_pin_disabled_bitmap_white;
@@ -46,6 +47,7 @@ static BitmapLayer *s_bitmap_pin_2;
 static BitmapLayer *s_bitmap_pin_3;
 static BitmapLayer *s_bitmap_pin_4;
 static BitmapLayer *s_bitmap_indicator;
+static BitmapLayer *s_bitmap_background;
 
 static void initialise_ui(void) {
   s_window = window_create();
@@ -54,6 +56,7 @@ static void initialise_ui(void) {
   #endif
     
   s_indicator_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_INDICATOR);
+  s_background_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BACKGROUND);
   #ifdef PBL_PLATFORM_APLITE
     s_pin_enabled_bitmap_black = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_ENABLED);
     s_pin_enabled_bitmap_white = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_ENABLED);
@@ -63,6 +66,10 @@ static void initialise_ui(void) {
     s_pin_enabled = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_ENABLED);
     s_pin_disabled = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_PIN_DISABLED);
   #endif
+    
+  s_bitmap_background = bitmap_layer_create(GRect(0, 0, 144, 168));
+  bitmap_layer_set_bitmap(s_bitmap_background, s_background_bitmap);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_background);
   
   s_res_gothic_18_bold = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
   s_res_gothic_14 = fonts_get_system_font(FONT_KEY_GOTHIC_14);
@@ -236,8 +243,10 @@ static void destroy_ui(void) {
   bitmap_layer_destroy(s_bitmap_pin_3);
   bitmap_layer_destroy(s_bitmap_pin_4);
   bitmap_layer_destroy(s_bitmap_indicator);
+  bitmap_layer_destroy(s_bitmap_background);
   
   gbitmap_destroy(s_indicator_bitmap);
+  gbitmap_destroy(s_background_bitmap);
   #ifdef PBL_PLATFORM_APLITE
     gbitmap_destroy(s_pin_enabled_bitmap_black);
     gbitmap_destroy(s_pin_enabled_bitmap_white);

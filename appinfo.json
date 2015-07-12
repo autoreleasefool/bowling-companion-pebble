@@ -9,6 +9,11 @@
     "resources": {
         "media": [
             {
+                "file": "images/background.png",
+                "name": "IMAGE_BACKGROUND",
+                "type": "png"
+            },
+            {
                 "file": "images/indicator.png",
                 "name": "IMAGE_INDICATOR",
                 "type": "png"
