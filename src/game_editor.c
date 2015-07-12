@@ -423,6 +423,8 @@ static void update_all_textboxes() {
   
   
   calculate_score();
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Frame: %d", s_current_frame + 1);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Ball: %d", s_current_ball + 1);
   text_layer_set_text(s_textlayer_f1_score, itoa(s_game_score[first_frame]));
   text_layer_set_text(s_textlayer_f2_score, itoa(s_game_score[second_frame]));
   text_layer_set_text(s_textlayer_f3_score, itoa(s_game_score[third_frame]));
