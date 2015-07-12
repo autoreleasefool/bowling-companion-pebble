@@ -2,7 +2,7 @@
 #include "game_editor.h"
 #include "utils.h"
   
-static uint8_t s_current_pin = 0;
+static int s_current_pin = 0;
 static PropertyAnimation *s_property_animation;
   
 static GBitmap *s_indicator_bitmap;
@@ -19,10 +19,11 @@ static char* bowler_name;
 static char* league_name;
 static char* series_name;
 static char* game_title;
-static uint8_t s_current_game = 0;
-static uint8_t s_current_frame = 0;
-static uint8_t s_current_ball = 0;
+static int s_current_game = 0;
+static int s_current_frame = 0;
+static int s_current_ball = 0;
 static bool s_pin_state[150];
+static int s_game_score[10];
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -43,6 +44,10 @@ static TextLayer *s_textlayer_f2_b3;
 static TextLayer *s_textlayer_f3_b1;
 static TextLayer *s_textlayer_f3_b2;
 static TextLayer *s_textlayer_f3_b3;
+static TextLayer *s_textlayer_frame_label;
+static TextLayer *s_textlayer_frame;
+static TextLayer *s_textlayer_ball_label;
+static TextLayer *s_textlayer_ball;
 static BitmapLayer *s_bitmap_pin_0;
 static BitmapLayer *s_bitmap_pin_1;
 static BitmapLayer *s_bitmap_pin_2;
@@ -216,6 +221,30 @@ static void initialise_ui(void) {
   text_layer_set_font(s_textlayer_f3_b3, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_f3_b3);
   
+  s_textlayer_frame_label = text_layer_create(GRect(79, 5, 30, 15));
+  text_layer_set_text(s_textlayer_frame_label, "F:");
+  text_layer_set_text_alignment(s_textlayer_frame_label, GTextAlignmentRight);
+  text_layer_set_font(s_textlayer_frame_label, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_frame_label);
+  
+  s_textlayer_frame = text_layer_create(GRect(109, 5, 30, 15));
+  text_layer_set_text(s_textlayer_frame, "1");
+  text_layer_set_text_alignment(s_textlayer_frame, GTextAlignmentRight);
+  text_layer_set_font(s_textlayer_frame, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_frame);
+  
+  s_textlayer_ball_label = text_layer_create(GRect(79, 20, 30, 15));
+  text_layer_set_text(s_textlayer_ball_label, "B:");
+  text_layer_set_text_alignment(s_textlayer_ball_label, GTextAlignmentRight);
+  text_layer_set_font(s_textlayer_ball_label, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_ball_label);
+  
+  s_textlayer_ball = text_layer_create(GRect(109, 20, 30, 15));
+  text_layer_set_text(s_textlayer_ball, "1");
+  text_layer_set_text_alignment(s_textlayer_ball, GTextAlignmentRight);
+  text_layer_set_font(s_textlayer_ball, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_ball);
+  
   // s_bitmap_pin_0
   s_bitmap_pin_0 = bitmap_layer_create(GRect(0, 92, 28, 60));
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_pin_0);
@@ -290,6 +319,10 @@ static void destroy_ui(void) {
   text_layer_destroy(s_textlayer_f3_b1);
   text_layer_destroy(s_textlayer_f3_b2);
   text_layer_destroy(s_textlayer_f3_b3);
+  text_layer_destroy(s_textlayer_frame);
+  text_layer_destroy(s_textlayer_frame_label);
+  text_layer_destroy(s_textlayer_ball);
+  text_layer_destroy(s_textlayer_ball_label);
   bitmap_layer_destroy(s_bitmap_pin_0);
   bitmap_layer_destroy(s_bitmap_pin_1);
   bitmap_layer_destroy(s_bitmap_pin_2);
@@ -312,32 +345,98 @@ static void destroy_ui(void) {
 }
 // END AUTO-GENERATED UI CODE
 
-static bool is_pin_knocked(uint8_t frame, uint8_t ball, uint8_t pin) {
+static bool is_pin_knocked(int frame, int ball, int pin) {
   return s_pin_state[frame * 15 + ball * 5 + pin];
 }
 
-static void set_pin_knocked(uint8_t frame, uint8_t ball, uint8_t pin, bool knocked) {
+static void set_pin_knocked(int frame, int ball, int pin, bool knocked) {
   s_pin_state[frame * 15 + ball * 5 + pin] = knocked;
 }
 
-static void update_all_textboxes() {
-  //s_textlayer_f1_b1 - f3_b3
-  //s_textlayer_f1_score - s_textlayer_f3_score
+static void calculate_score() {
+  //Calculates and keeps running total of scores of each frame
+  int frame_score[10] = {0};
+  for (int f = 9; f >= 0; f--) {
+    bool is_valid = true;
+    if (f == 9) {
+      for (int b = 2; b >= 0; b--) {
+        switch (b) {
+          case 2:
+            frame_score[f] += get_value_of_frame(f, b, s_pin_state);
+            break;
+          case 1:
+          case 0:
+            if (is_frame_strike(f, b, s_pin_state)) {
+              frame_score[f] += get_value_of_frame(f, b, s_pin_state);
+            }
+            break;
+        }
+      }
+    } else {
+      for (int b = 0; b < 3 && is_valid; b++) {
+        if (b < 2 && is_frame_strike(f, b, s_pin_state)) {
+          frame_score[f] += get_value_of_frame(f, b, s_pin_state);
+          frame_score[f] += get_value_of_frame(f + 1, 0, s_pin_state);
+          if (b == 0) {
+            if (f == 8) {
+              if (frame_score[f] == 30) {
+                frame_score[f] += get_value_of_frame(f + 1, 1, s_pin_state);
+              } else {
+                frame_score[f] += get_value_of_frame_diff(f + 1, 0, f + 1, 1, s_pin_state);
+              }
+            } else if (frame_score[f] < 30) {
+              frame_score[f] += get_value_of_frame_diff(f + 1, 0, f + 1, 1, s_pin_state);
+            } else {
+              frame_score[f] += get_value_of_frame(f + 2, 0, s_pin_state);
+            }
+          }
+          is_valid = false;
+        } else if (b == 2) {
+          frame_score[f] += get_value_of_frame(f, b, s_pin_state);
+        }
+      }
+    }
+  }
+  
+  for (int i = 0; i < 10; i++) {
+    if (i > 0) {
+      s_game_score[i] = s_game_score[i - 1] + frame_score[i];
+    } else {
+      s_game_score[i] = frame_score[i];
+    }
+  }
 }
 
-static void update_last_textboxes() {
-  //s_textlater_f3_b1 - s_textlater_f3_b3
-  //s_textlayer_f3_score
+static void update_all_textboxes() {
+  int first_frame, second_frame, third_frame;
+  //s_textlayer_f1_b1 - f3_b3
+  //s_textlayer_f1_score - s_textlayer_f3_score
+  if (s_current_frame < 3) {
+    first_frame = 0;
+    second_frame = 1;
+    third_frame = 2;
+  } else {
+    first_frame = s_current_frame - 2;
+    second_frame = s_current_frame - 1;
+    third_frame = s_current_frame;
+  }
+  
+  
+  calculate_score();
+  text_layer_set_text(s_textlayer_f1_score, itoa(s_game_score[first_frame]));
+  text_layer_set_text(s_textlayer_f2_score, itoa(s_game_score[second_frame]));
+  text_layer_set_text(s_textlayer_f3_score, itoa(s_game_score[third_frame]));
+  text_layer_set_text(s_textlayer_frame, itoa(s_current_frame + 1));
+  text_layer_set_text(s_textlayer_ball, itoa(s_current_ball + 1));
 }
 
 static void on_animation_stopped(Animation *anim, bool finished, void *context)
 {
   //Free the memory used by the Animation
   property_animation_destroy((PropertyAnimation*) anim);
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Animation destroyed");
 }
 
-static void set_game(uint8_t new_game) {
+static void set_game(int new_game) {
   s_current_game = new_game + 1;
   const char* game_boiler = "Game #";
   const char* game_num = itoa(s_current_game);
@@ -353,7 +452,61 @@ static void set_game(uint8_t new_game) {
   s_current_game--;
 }
 
-static void update_pin_status(BitmapLayer *pin_bitmap, uint8_t frame, uint8_t ball, uint8_t pin, bool knocked) {
+static void update_pin_status(BitmapLayer *pin_bitmap, int frame, int ball, int pin, bool knocked) {
+  /*if (!is_pin_knocked(frame, ball, pin)) {
+    for (int i = s_current_ball; i < 3; i++) {
+      set_pin_knocked(frame, i, pin, true);
+    }
+  } else {
+    for (int i = s_current_ball; i < 3; i++) {
+      set_pin_knocked(frame, i, pin, false);
+    }
+  }*/
+  /*
+  final boolean isPinKnockedOver = mPinState[mCurrentFrame][mCurrentBall][pinToSet];
+                final boolean allPinsKnockedOver;
+                if (!isPinKnockedOver)
+                {
+                    for (int i = mCurrentBall; i < 3; i++)
+                        mPinState[mCurrentFrame][i][pinToSet] = true;
+
+                    if (Arrays.equals(mPinState[mCurrentFrame][mCurrentBall],
+                            Constants.FRAME_PINS_DOWN))
+                    {
+                        for (int i = mCurrentBall + 1; i < 3; i++)
+                            mFouls[mCurrentFrame][i] = false;
+
+                        if (mCurrentFrame == Constants.LAST_FRAME)
+                        {
+                            if (mCurrentBall < 2)
+                            {
+                                for (int j = mCurrentBall + 1; j < 3; j++)
+                                {
+                                    for (int i = 0; i < 5; i++)
+                                        mPinState[mCurrentFrame][j][i] = false;
+                                }
+                            }
+                        }
+                        allPinsKnockedOver = true;
+                    }
+                    else
+                        allPinsKnockedOver = false;
+                }
+                else
+                {
+                    allPinsKnockedOver = false;
+                    for (int i = mCurrentBall; i < 3; i++)
+                        mPinState[mCurrentFrame][i][pinToSet] = false;
+
+                    if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 1)
+                        System.arraycopy(
+                                mPinState[mCurrentFrame][1],
+                                0,
+                                mPinState[mCurrentFrame][2],
+                                0,
+                                mPinState[mCurrentFrame][1].length);
+                }
+  */
   set_pin_knocked(frame, ball, pin, knocked);
   if (knocked) {
     #ifdef PBL_PLATFORM_APLITE
@@ -371,7 +524,6 @@ static void update_pin_status(BitmapLayer *pin_bitmap, uint8_t frame, uint8_t ba
 }
 
 static void update_indicator_position(void) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Animation broken");
   Layer *root_indicator_layer = bitmap_layer_get_layer(s_bitmap_indicator);
   GRect to_frame = GRect(0, 0, 0, 0);
   GRect from_frame = layer_get_frame(root_indicator_layer);
@@ -435,6 +587,7 @@ static void up_long_click_release_handler(ClickRecognizerRef recognizer, void *c
   update_pin_status(s_bitmap_pin_2, s_current_frame, s_current_ball, 2, is_pin_knocked(s_current_frame, s_current_ball, 2));
   update_pin_status(s_bitmap_pin_3, s_current_frame, s_current_ball, 3, is_pin_knocked(s_current_frame, s_current_ball, 3));
   update_pin_status(s_bitmap_pin_4, s_current_frame, s_current_ball, 4, is_pin_knocked(s_current_frame, s_current_ball, 4));
+  update_all_textboxes();
 }
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
@@ -467,6 +620,7 @@ static void down_long_click_release_handler(ClickRecognizerRef recognizer, void 
   update_pin_status(s_bitmap_pin_2, s_current_frame, s_current_ball, 2, is_pin_knocked(s_current_frame, s_current_ball, 2));
   update_pin_status(s_bitmap_pin_3, s_current_frame, s_current_ball, 3, is_pin_knocked(s_current_frame, s_current_ball, 3));
   update_pin_status(s_bitmap_pin_4, s_current_frame, s_current_ball, 4, is_pin_knocked(s_current_frame, s_current_ball, 4));
+  update_all_textboxes();
 }
 
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
@@ -491,6 +645,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   }
 
   update_pin_status(active_pin, s_current_frame, s_current_ball, s_current_pin, !is_pin_knocked(s_current_frame, s_current_ball, s_current_pin));
+  update_all_textboxes();
 }
 
 static void select_long_click_handler(ClickRecognizerRef recognizer, void *context) {
@@ -503,6 +658,7 @@ static void select_long_click_release_handler(ClickRecognizerRef recognizer, voi
   update_pin_status(s_bitmap_pin_2, s_current_frame, s_current_ball, 0x2, true);
   update_pin_status(s_bitmap_pin_3, s_current_frame, s_current_ball, 0x3, true);
   update_pin_status(s_bitmap_pin_4, s_current_frame, s_current_ball, 0x4, true);
+  update_all_textboxes();
   
   // TODO: go to next frame
 }
