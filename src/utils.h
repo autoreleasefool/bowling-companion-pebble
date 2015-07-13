@@ -9,7 +9,6 @@
 #define DEFAULT_EVENT_NAME "Pebble event"
 #define DEFAULT_SERIES_NAME "Pebble series"
 
-char *itoa(int num);
 int get_value_of_frame(int frame, int ball, bool pin_state[]);
 int get_value_of_frame_diff(int frame1, int ball1, int frame2, int ball2, bool pin_state[]);
 bool is_frame_strike(int frame, int ball, bool pin_state[]);

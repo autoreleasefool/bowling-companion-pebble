@@ -25,6 +25,12 @@ static int s_current_ball = 0;
 static bool s_pin_state[150];
 static int s_game_score[10];
 
+static char* frame_number;
+static char* ball_number;
+static char* frame_score_1;
+static char* frame_score_2;
+static char* frame_score_3;
+
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
 static GFont s_res_gothic_18_bold;
@@ -409,8 +415,8 @@ static void calculate_score() {
 
 static void update_all_textboxes() {
   int first_frame, second_frame, third_frame;
-  //s_textlayer_f1_b1 - f3_b3
-  //s_textlayer_f1_score - s_textlayer_f3_score
+  calculate_score();
+  
   if (s_current_frame < 3) {
     first_frame = 0;
     second_frame = 1;
@@ -421,35 +427,57 @@ static void update_all_textboxes() {
     third_frame = s_current_frame;
   }
   
-  
-  calculate_score();
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Frame: %d", s_current_frame + 1);
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Ball: %d", s_current_ball + 1);
-  text_layer_set_text(s_textlayer_f1_score, itoa(s_game_score[first_frame]));
-  text_layer_set_text(s_textlayer_f2_score, itoa(s_game_score[second_frame]));
-  text_layer_set_text(s_textlayer_f3_score, itoa(s_game_score[third_frame]));
-  text_layer_set_text(s_textlayer_frame, itoa(s_current_frame + 1));
-  text_layer_set_text(s_textlayer_ball, itoa(s_current_ball + 1));
+  if (ball_number) {
+    free(ball_number);
+    ball_number = NULL;
+  }
+  if (frame_number) {
+    free(frame_number);
+    frame_number = NULL;
+  }
+  if (frame_score_1) {
+    free(frame_score_1);
+    frame_score_1 = NULL;
+  }
+  if (frame_score_2) {
+    free(frame_score_2);
+    frame_score_2 = NULL;
+  }
+  if (frame_score_3) {
+    free(frame_score_3);
+    frame_score_3 = NULL;
+  }
+  ball_number = (char*) malloc(2);
+  frame_number = (char*) malloc(3);
+  frame_score_1 = (char*) malloc(4);
+  frame_score_2 = (char*) malloc(4);
+  frame_score_3 = (char*) malloc(4);
+  snprintf(ball_number, sizeof(ball_number), "%d", (s_current_ball + 1));
+  snprintf(frame_number, sizeof(frame_number), "%d", (s_current_frame + 1));
+  snprintf(frame_score_1, sizeof(frame_score_1), "%d", s_game_score[first_frame]);
+  snprintf(frame_score_2, sizeof(frame_score_2), "%d", s_game_score[second_frame]);
+  snprintf(frame_score_3, sizeof(frame_score_3), "%d", s_game_score[third_frame]);
+  text_layer_set_text(s_textlayer_f1_score, frame_score_1);
+  text_layer_set_text(s_textlayer_f2_score, frame_score_2);
+  text_layer_set_text(s_textlayer_f3_score, frame_score_3);
+  text_layer_set_text(s_textlayer_frame, frame_number);
+  text_layer_set_text(s_textlayer_ball, ball_number);
 }
 
-static void on_animation_stopped(Animation *anim, bool finished, void *context)
-{
+static void on_animation_stopped(Animation *anim, bool finished, void *context){
   //Free the memory used by the Animation
   property_animation_destroy((PropertyAnimation*) anim);
 }
 
 static void set_game(int new_game) {
   s_current_game = new_game + 1;
-  const char* game_boiler = "Game #";
-  const char* game_num = itoa(s_current_game);
 
   if (game_title) {
     free(game_title);
     game_title = NULL;
   }
-  game_title = (char*) malloc(strlen(game_boiler) + strlen(game_num) + 1);
-  strcpy(game_title, game_boiler);
-  strcat(game_title, game_num);
+  game_title = (char*) malloc(sizeof(char) * 8 + 1);
+  snprintf(game_title, 9, "%s%d", "Game #", s_current_game);
   text_layer_set_text(s_textlayer_gamenum, game_title);
   s_current_game--;
 }
@@ -681,6 +709,31 @@ static void handle_window_load(Window* window) {
 
 static void handle_window_unload(Window* window) {
   destroy_ui();
+  
+  if (game_title) {
+    free(game_title);
+    game_title = NULL;
+  }
+  if (ball_number) {
+    free(ball_number);
+    ball_number = NULL;
+  }
+  if (frame_number) {
+    free(frame_number);
+    frame_number = NULL;
+  }
+  if (frame_score_1) {
+    free(frame_score_1);
+    frame_score_1 = NULL;
+  }
+  if (frame_score_2) {
+    free(frame_score_2);
+    frame_score_2 = NULL;
+  }
+  if (frame_score_3) {
+    free(frame_score_3);
+    frame_score_3 = NULL;
+  }
 }
 
 void show_game_editor(char* new_bowler_name, char* new_league_name, char* new_series_name) {
