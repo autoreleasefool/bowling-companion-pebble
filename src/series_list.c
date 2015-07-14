@@ -15,6 +15,7 @@ static GBitmap *s_plus_bitmap;
 static bool s_new_series_selected = true;
 static char* bowler_name;
 static char* league_name;
+static bool s_game_editor_created = false;
 
 static void initialise_ui(void) {
   s_window = window_create();
@@ -107,6 +108,7 @@ static void menu_draw_row_callback(GContext *ctx, const Layer *cell_layer, MenuI
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
   char* row_text = get_row_text(cell_index->section, cell_index->row);
   if (strcmp(row_text, NO_SERIES) != 0) {
+    s_game_editor_created = true;
     show_game_editor(bowler_name, league_name, row_text);
   }
 }
@@ -135,6 +137,10 @@ static void handle_window_load(Window* window) {
 }
 
 static void handle_window_unload(Window* window) {
+  if (s_game_editor_created) {
+    s_game_editor_created = false;
+    hide_game_editor();
+  }
   destroy_ui();
 }
 

@@ -14,6 +14,7 @@ static GBitmap *s_plus_bitmap;
 
 static bool s_new_event_selected = true;
 static char* bowler_name;
+static bool s_series_list_created = false;
 
 static void initialise_ui(void) {
   s_window = window_create();
@@ -106,6 +107,7 @@ static void menu_draw_row_callback(GContext *ctx, const Layer *cell_layer, MenuI
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
   char* row_text = get_row_text(cell_index->section, cell_index->row);
   if (strcmp(row_text, NO_LEAGUES) != 0) {
+    s_series_list_created = true;
     show_series_list(bowler_name, row_text);
   }
 }
@@ -134,6 +136,10 @@ static void handle_window_load(Window* window) {
 }
 
 static void handle_window_unload(Window* window) {
+  if (s_series_list_created) {
+    s_series_list_created = false;
+    hide_series_list();
+  }
   destroy_ui();
 }
 
