@@ -1,0 +1,23 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "Joseph Roque",
+    "longName": "Bowling Companion",
+    "projectType": "native",
+    "resources": {
+        "media": []
+    },
+    "sdkVersion": "3",
+    "shortName": "5 Pin Bowling Companion",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
+    "uuid": "3d736ccb-bf61-440b-9d68-12d4bf7eceb4",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
