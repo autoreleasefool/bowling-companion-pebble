@@ -1,48 +1,18 @@
 {
-    "appKeys": {},
-    "capabilities": [
-        ""
-    ],
-    "companyName": "joseph.roque-@hotmail.com",
-    "longName": "5 Pin Bowling Companion",
-    "projectType": "native",
-    "resources": {
-        "media": [
-            {
-                "file": "images/pin_disabled_color 3.03.53 PM.png",
-                "name": "IMAGE_PIN_DISABLED",
-                "type": "png"
-            },
-            {
-                "file": "images/pin_enabled_color 3.03.53 PM.png",
-                "name": "IMAGE_PIN_ENABLED",
-                "type": "png"
-            },
-            {
-                "file": "images/plus.png",
-                "name": "IMAGE_PLUS",
-                "type": "png"
-            },
-            {
-                "file": "images/indicator.png",
-                "name": "IMAGE_INDICATOR",
-                "type": "png"
-            },
-            {
-                "file": "images/background.png",
-                "name": "IMAGE_BACKGROUND",
-                "type": "png"
-            }
-        ]
-    },
-    "sdkVersion": "3",
-    "shortName": "5 Pin Bowling Companion",
-    "targetPlatforms": [
-        "basalt"
-    ],
-    "uuid": "e162d78c-510d-4be4-bd08-71a5afea7ff9",
-    "versionLabel": "1.0",
-    "watchapp": {
-        "watchface": false
-    }
+  "uuid": "ad0fb595-2e62-490f-941e-de3f0eee03ce",
+  "shortName": "Bowling Companion",
+  "longName": "Bowling Companion",
+  "companyName": "MakeAwesomeHappen",
+  "versionLabel": "1.0",
+  "sdkVersion": "3",
+  "targetPlatforms": ["aplite", "basalt"],
+  "watchapp": {
+    "watchface": false
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+  "resources": {
+    "media": []
+  }
 }
