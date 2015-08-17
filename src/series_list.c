@@ -24,7 +24,6 @@
  */
 
 #include <pebble.h>
-#include "league_list.h"
 #include "series_list.h"
 
 #define NUM_MENU_SECTIONS 2
@@ -32,7 +31,7 @@
 #define NUM_SECOND_MENU_ITEMS 1
 
 static Window *s_main_window;
-static MenuLayer *s_menulayer_leagues;
+static MenuLayer *s_menulayer_series;
 
 static void initialise_ui(void) {
   s_main_window = window_create();
@@ -40,7 +39,7 @@ static void initialise_ui(void) {
 
 static void destroy_ui(void) {
   window_destroy(s_main_window);
-  menu_layer_destroy(s_menulayer_leagues);
+  menu_layer_destroy(s_menulayer_series);
 }
 
 static int16_t menu_get_header_height_callback(MenuLayer *menu_layer, uint16_t section, void *data) {
@@ -61,8 +60,8 @@ static uint16_t menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t secti
 
 static char* get_header_text(uint16_t section_index) {
   switch (section_index) {
-    case 0: return "Create new event";
-    case 1: return "Leagues/Events";
+    case 0: return "Create new series";
+    case 1: return "Series";
     default: return "";
   }
 }
@@ -71,12 +70,12 @@ static char* get_row_text(uint16_t section, uint16_t row) {
   switch (section) {
     case 0:
       switch (row) {
-        case 0: return "New event";
+        case 0: return "New series";
         default: return "";
       }
     case 1:
       switch (row) {
-        case 0: return "No leagues/events";
+        case 0: return "No series";
         default: return "";
       }
     default:
@@ -85,7 +84,7 @@ static char* get_row_text(uint16_t section, uint16_t row) {
 }
 
 static char* get_row_subtitle(uint16_t section, uint16_t row) {
-  // TODO: return league/event average
+  // TODO: return series games / total?
   return "";
 }
 
@@ -100,16 +99,15 @@ static void menu_draw_row_callback(GContext *ctx, const Layer *cell_layer, MenuI
 }
 
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
-  // TODO: show league series
-  // TODO: open event games
+  // TODO: show games to edit
 }
 
 static void main_window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_frame(window_layer);
 
-  s_menulayer_leagues = menu_layer_create(bounds);
-  menu_layer_set_callbacks(s_menulayer_leagues, NULL, (MenuLayerCallbacks) {
+  s_menulayer_series = menu_layer_create(bounds);
+  menu_layer_set_callbacks(s_menulayer_series, NULL, (MenuLayerCallbacks) {
     .get_num_sections = menu_get_num_sections_callback,
     .get_num_rows = menu_get_num_rows_callback,
     .get_header_height = menu_get_header_height_callback,
@@ -118,15 +116,15 @@ static void main_window_load(Window *window) {
     .select_click = menu_select_callback,
   });
 
-  menu_layer_set_click_config_onto_window(s_menulayer_leagues, window);
-  layer_add_child(window_layer, menu_layer_get_layer(s_menulayer_leagues));
+  menu_layer_set_click_config_onto_window(s_menulayer_series, window);
+  layer_add_child(window_layer, menu_layer_get_layer(s_menulayer_series));
 }
 
 static void main_window_unload(Window *window) {
   destroy_ui();
 }
 
-void show_league_list(void) {
+void show_series_list(void) {
   initialise_ui();
   window_set_window_handlers(s_main_window, (WindowHandlers) {
     .load = main_window_load,
@@ -135,6 +133,6 @@ void show_league_list(void) {
   window_stack_push(s_main_window, true);
 }
 
-void hide_league_list(void) {
+void hide_series_list(void) {
   window_stack_remove(s_main_window, true);
 }
