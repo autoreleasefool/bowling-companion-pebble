@@ -27,9 +27,8 @@
 #include "bowler_list.h"
 #include "league_list.h"
 
-#define NUM_MENU_SECTIONS 2
+#define NUM_MENU_SECTIONS 1
 #define NUM_FIRST_MENU_ITEMS 1
-#define NUM_SECOND_MENU_ITEMS 1
 
 static Window *s_main_window;
 static MenuLayer *s_menulayer_bowlers;
@@ -54,15 +53,13 @@ static uint16_t menu_get_num_sections_callback(MenuLayer *menu_layer, void *data
 static uint16_t menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t section, void *data) {
   switch (section) {
     case 0: return NUM_FIRST_MENU_ITEMS;
-    case 1: return NUM_SECOND_MENU_ITEMS;
     default: return 0;
   }
 }
 
 static char* get_header_text(uint16_t section_index) {
   switch (section_index) {
-    case 0: return "Create new bowler";
-    case 1: return "Existing bowlers";
+    case 0: return "Existing bowlers";
     default: return "";
   }
 }
@@ -70,11 +67,6 @@ static char* get_header_text(uint16_t section_index) {
 static char* get_row_text(uint16_t section, uint16_t row) {
   switch (section) {
     case 0:
-      switch (row) {
-        case 0: return "New bowler";
-        default: return "";
-      }
-    case 1:
       switch (row) {
         case 0: return "No bowlers";
         default: return "";
@@ -101,6 +93,7 @@ static void menu_draw_row_callback(GContext *ctx, const Layer *cell_layer, MenuI
 
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
   // TODO: show bowler's leagues
+  show_league_list();
 }
 
 static void main_window_load(Window *window) {

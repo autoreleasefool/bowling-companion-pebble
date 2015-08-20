@@ -61,8 +61,8 @@ static uint16_t menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t secti
 
 static char* get_header_text(uint16_t section_index) {
   switch (section_index) {
-    case 0: return "Create new event";
-    case 1: return "Leagues/Events";
+    case 0: return "Leagues/Events";
+    case 1: return "Create new event";
     default: return "";
   }
 }
@@ -71,12 +71,12 @@ static char* get_row_text(uint16_t section, uint16_t row) {
   switch (section) {
     case 0:
       switch (row) {
-        case 0: return "New event";
+        case 0: return "No leagues/events";
         default: return "";
       }
     case 1:
       switch (row) {
-        case 0: return "No leagues/events";
+        case 0: return "New event";
         default: return "";
       }
     default:
@@ -102,6 +102,7 @@ static void menu_draw_row_callback(GContext *ctx, const Layer *cell_layer, MenuI
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
   // TODO: show league series
   // TODO: open event games
+  show_series_list();
 }
 
 static void main_window_load(Window *window) {

@@ -60,8 +60,8 @@ static uint16_t menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t secti
 
 static char* get_header_text(uint16_t section_index) {
   switch (section_index) {
-    case 0: return "Create new series";
-    case 1: return "Series";
+    case 0: return "Series";
+    case 1: return "Create new series";
     default: return "";
   }
 }
@@ -70,12 +70,12 @@ static char* get_row_text(uint16_t section, uint16_t row) {
   switch (section) {
     case 0:
       switch (row) {
-        case 0: return "New series";
+        case 0: return "No series";
         default: return "";
       }
     case 1:
       switch (row) {
-        case 0: return "No series";
+        case 0: return "New series";
         default: return "";
       }
     default:
