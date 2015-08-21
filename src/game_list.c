@@ -25,14 +25,12 @@
 
 #include <pebble.h>
 #include "game_list.h"
-#include "series_list.h"
 
-#define NUM_MENU_SECTIONS 2
+#define NUM_MENU_SECTIONS 1
 #define NUM_FIRST_MENU_ITEMS 1
-#define NUM_SECOND_MENU_ITEMS 1
 
 static Window *s_main_window;
-static MenuLayer *s_menulayer_series;
+static MenuLayer *s_menulayer_games;
 
 static void initialise_ui(void) {
   s_main_window = window_create();
@@ -40,7 +38,7 @@ static void initialise_ui(void) {
 
 static void destroy_ui(void) {
   window_destroy(s_main_window);
-  menu_layer_destroy(s_menulayer_series);
+  menu_layer_destroy(s_menulayer_games);
 }
 
 static int16_t menu_get_header_height_callback(MenuLayer *menu_layer, uint16_t section, void *data) {
@@ -54,15 +52,13 @@ static uint16_t menu_get_num_sections_callback(MenuLayer *menu_layer, void *data
 static uint16_t menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t section, void *data) {
   switch (section) {
     case 0: return NUM_FIRST_MENU_ITEMS;
-    case 1: return NUM_SECOND_MENU_ITEMS;
     default: return 0;
   }
 }
 
 static char* get_header_text(uint16_t section_index) {
   switch (section_index) {
-    case 0: return "Series";
-    case 1: return "Create new series";
+    case 0: return "Games";
     default: return "";
   }
 }
@@ -71,12 +67,7 @@ static char* get_row_text(uint16_t section, uint16_t row) {
   switch (section) {
     case 0:
       switch (row) {
-        case 0: return "No series";
-        default: return "";
-      }
-    case 1:
-      switch (row) {
-        case 0: return "New series";
+        case 0: return "No games";
         default: return "";
       }
     default:
@@ -85,7 +76,7 @@ static char* get_row_text(uint16_t section, uint16_t row) {
 }
 
 static char* get_row_subtitle(uint16_t section, uint16_t row) {
-  // TODO: return series games / total?
+  // TODO: return game score
   return "";
 }
 
@@ -100,17 +91,15 @@ static void menu_draw_row_callback(GContext *ctx, const Layer *cell_layer, MenuI
 }
 
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
-  // TODO: show list of games for events/leagues with 2+ games
-  // TODO: show only game for events/leagues with 1 game
-  show_game_list();
+  // TODO: show games to edit
 }
 
 static void main_window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_frame(window_layer);
 
-  s_menulayer_series = menu_layer_create(bounds);
-  menu_layer_set_callbacks(s_menulayer_series, NULL, (MenuLayerCallbacks) {
+  s_menulayer_games = menu_layer_create(bounds);
+  menu_layer_set_callbacks(s_menulayer_games, NULL, (MenuLayerCallbacks) {
     .get_num_sections = menu_get_num_sections_callback,
     .get_num_rows = menu_get_num_rows_callback,
     .get_header_height = menu_get_header_height_callback,
@@ -119,15 +108,15 @@ static void main_window_load(Window *window) {
     .select_click = menu_select_callback,
   });
 
-  menu_layer_set_click_config_onto_window(s_menulayer_series, window);
-  layer_add_child(window_layer, menu_layer_get_layer(s_menulayer_series));
+  menu_layer_set_click_config_onto_window(s_menulayer_games, window);
+  layer_add_child(window_layer, menu_layer_get_layer(s_menulayer_games));
 }
 
 static void main_window_unload(Window *window) {
   destroy_ui();
 }
 
-void show_series_list(void) {
+void show_game_list(void) {
   initialise_ui();
   window_set_window_handlers(s_main_window, (WindowHandlers) {
     .load = main_window_load,
@@ -136,6 +125,6 @@ void show_series_list(void) {
   window_stack_push(s_main_window, true);
 }
 
-void hide_series_list(void) {
+void hide_game_list(void) {
   window_stack_remove(s_main_window, true);
 }
