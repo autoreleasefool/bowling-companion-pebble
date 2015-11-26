@@ -13,6 +13,63 @@
     "dummy": 0
   },
   "resources": {
-    "media": []
+    "media": [
+      {
+        "type": "png-trans",
+        "name": "IMAGE_INDICATOR",
+        "file": "images/indicator.png"
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_PIN_DISABLED",
+        "file": "images/pin_disabled.png"
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_PIN_ENABLED",
+        "file": "images/pin_enabled.png"
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_PLUS",
+        "file": "images/plus.png"
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_BOWLER_NEW",
+        "file": "images/ic_bowler_new.png"
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_BOWLER",
+        "file": "images/ic_bowler.png"
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_EVENT",
+        "file": "images/ic_e.png"
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_LEAGUE",
+        "file": "images/ic_l.png"
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_LOCKED",
+        "file": "images/ic_locked.png"
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_UNLOCKED",
+        "file": "images/ic_unlocked.png"
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_LANE",
+        "file": "images/lane_background.png",
+        "targetPlatforms": ["basalt"]
+      }
+    ]
   }
 }
