@@ -14,5 +14,12 @@
  * limitations under the License.
  */
 
+/*
+ * Sets up the window for the bowlers menu.
+ */
 void show_bowler_list(void);
+
+/*
+ * Unloads this window.
+ */
 void hide_bowler_list(void);

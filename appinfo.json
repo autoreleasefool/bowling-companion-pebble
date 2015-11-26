@@ -106,6 +106,24 @@
       },
       {
         "type": "png",
+        "name": "IMAGE_CLOSE",
+        "file": "images/bw/ic_x.png",
+        "targetPlatforms": ["aplite"]
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_CLOSE",
+        "file": "images/color/ic_x.png",
+        "targetPlatforms": ["basalt"]
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_CLOSE_HIGHLIGHT",
+        "file": "images/color/ic_x_highlight.png",
+        "targetPlatforms": ["basalt"]
+      },
+      {
+        "type": "png",
         "name": "IMAGE_LOCKED",
         "file": "images/bw/ic_locked.png",
         "targetPlatforms": ["aplite"]

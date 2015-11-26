@@ -14,5 +14,12 @@
  * limitations under the License.
  */
 
+ /*
+  * Sets up the window for the leagues/events menu.
+  */
 void show_league_list(void);
+
+/*
+ * Unloads this window.
+ */
 void hide_league_list(void);

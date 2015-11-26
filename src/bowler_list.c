@@ -22,7 +22,7 @@
 #define NUM_FIRST_MENU_ITEMS 1
 #define NUM_SECOND_MENU_ITEMS 1
 
-// System objects
+// UI objects
 static Window *s_main_window;
 static MenuLayer *s_menulayer_bowlers;
 
@@ -31,6 +31,8 @@ static GBitmap *s_bitmap_bowler_new;
 static GBitmap *s_bitmap_bowler_new_highlighted;
 static GBitmap *s_bitmap_bowler;
 static GBitmap *s_bitmap_bowler_highlighted;
+static GBitmap *s_bitmap_x;
+static GBitmap *s_bitmap_x_highlighted;
 
 /*
  * Returns the height of the menu section header for the section represented by /section_index/.
@@ -59,7 +61,7 @@ static uint16_t menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t secti
 }
 
 /*
- * Returns the header text of the section of the menu represented by /section_index/
+ * Returns the header text of the section of the menu represented by /section_index/.
  */
 static char* get_header_text(uint16_t section_index) {
   switch (section_index) {
@@ -123,10 +125,11 @@ static GBitmap* get_row_image(const Layer *cell_layer, uint16_t section_index, u
         return NULL;
       }
     case 1:
+      // TODO: return bowler for bowlers, x for none
       if (menu_cell_layer_is_highlighted(cell_layer))
-        return s_bitmap_bowler_highlighted;
+        return s_bitmap_x_highlighted;
       else
-        return s_bitmap_bowler;
+        return s_bitmap_x;
     default:
       return NULL;
   }
@@ -140,7 +143,8 @@ static void menu_draw_header_callback(GContext *ctx, const Layer *cell_layer, ui
 }
 
 /*
- * Invokes the method /menu_cell_basic_draw/ with the title as /get_row_title/ and the subtitle as /get_row_subtitle/.
+ * Invokes the method /menu_cell_basic_draw/ with the title as /get_row_title/, the subtitle as /get_row_subtitle/,
+ * and the image as /get_row_image/.
  */
 static void menu_draw_row_callback(GContext *ctx, const Layer *cell_layer, MenuIndex *cell_index, void *data) {
   uint16_t section_index = cell_index->section;
@@ -158,22 +162,24 @@ static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, v
 }
 
 /*
- * Sets up interactions when the window has finished loading
+ * Sets up interactions when the window has finished loading.
  */
 static void main_window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_frame(window_layer);
 
+  s_bitmap_bowler_new = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BOWLER_NEW);
+  s_bitmap_bowler = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BOWLER);
+  s_bitmap_x = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CLOSE);
+
   #ifdef PBL_COLOR
-    s_bitmap_bowler_new = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BOWLER_NEW);
     s_bitmap_bowler_new_highlighted = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BOWLER_NEW_HIGHLIGHT);
-    s_bitmap_bowler = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BOWLER);
     s_bitmap_bowler_highlighted = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BOWLER_HIGHLIGHT);
+    s_bitmap_x_highlighted = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CLOSE_HIGHLIGHT);
   #else
-    s_bitmap_bowler_new = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BOWLER_NEW);
     s_bitmap_bowler_new_highlighted = s_bitmap_bowler_new;
-    s_bitmap_bowler = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_BOWLER);
     s_bitmap_bowler_highlighted = s_bitmap_bowler;
+    s_bitmap_x_highlighted = s_bitmap_x;
   #endif
 
   s_menulayer_bowlers = menu_layer_create(bounds);
@@ -191,18 +197,22 @@ static void main_window_load(Window *window) {
 }
 
 /*
- * Releases references to UI objects
+ * Releases references to UI objects.
  */
 static void main_window_unload(Window *window) {
   window_destroy(s_main_window);
   menu_layer_destroy(s_menulayer_bowlers);
 
   gbitmap_destroy(s_bitmap_bowler_new);
+  gbitmap_destroy(s_bitmap_bowler_new_highlighted);
   gbitmap_destroy(s_bitmap_bowler);
+  gbitmap_destroy(s_bitmap_bowler_highlighted);
+  gbitmap_destroy(s_bitmap_x);
+  gbitmap_destroy(s_bitmap_x_highlighted);
 }
 
 /*
- * Sets up the window for the bowlers menu
+ * Sets up the window for the bowlers menu.
  */
 void show_bowler_list(void) {
   s_main_window = window_create();
@@ -214,7 +224,7 @@ void show_bowler_list(void) {
 }
 
 /*
- * Unloads this window
+ * Unloads this window.
  */
 void hide_bowler_list(void) {
   window_stack_remove(s_main_window, true);
