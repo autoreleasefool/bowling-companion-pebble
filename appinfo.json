@@ -15,59 +15,129 @@
   "resources": {
     "media": [
       {
-        "type": "png-trans",
-        "name": "IMAGE_INDICATOR",
-        "file": "images/indicator.png"
+        "type": "png",
+        "name": "IMAGE_ADD",
+        "file": "images/bw/ic_add.png",
+        "targetPlatforms": ["aplite"]
       },
       {
         "type": "png",
-        "name": "IMAGE_PIN_DISABLED",
-        "file": "images/pin_disabled.png"
+        "name": "IMAGE_ADD",
+        "file": "images/color/ic_add.png",
+        "targetPlatforms": ["basalt"]
       },
       {
         "type": "png",
-        "name": "IMAGE_PIN_ENABLED",
-        "file": "images/pin_enabled.png"
-      },
-      {
-        "type": "png",
-        "name": "IMAGE_PLUS",
-        "file": "images/plus.png"
+        "name": "IMAGE_ADD_HIGHLIGHT",
+        "file": "images/color/ic_add_highlight.png",
+        "targetPlatforms": ["basalt"]
       },
       {
         "type": "png",
         "name": "IMAGE_BOWLER_NEW",
-        "file": "images/ic_bowler_new.png"
+        "file": "images/bw/ic_bowler_new.png",
+        "targetPlatforms": ["aplite"]
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_BOWLER_NEW",
+        "file": "images/color/ic_bowler_new.png",
+        "targetPlatforms": ["basalt"]
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_BOWLER_NEW_HIGHLIGHT",
+        "file": "images/color/ic_bowler_new_highlight.png",
+        "targetPlatforms": ["basalt"]
       },
       {
         "type": "png",
         "name": "IMAGE_BOWLER",
-        "file": "images/ic_bowler.png"
+        "file": "images/bw/ic_bowler.png",
+        "targetPlatforms": ["aplite"]
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_BOWLER",
+        "file": "images/color/ic_bowler.png",
+        "targetPlatforms": ["basalt"]
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_BOWLER_HIGHLIGHT",
+        "file": "images/color/ic_bowler_highlight.png",
+        "targetPlatforms": ["basalt"]
       },
       {
         "type": "png",
         "name": "IMAGE_EVENT",
-        "file": "images/ic_e.png"
+        "file": "images/bw/ic_e.png",
+        "targetPlatforms": ["aplite"]
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_EVENT",
+        "file": "images/color/ic_e.png",
+        "targetPlatforms": ["basalt"]
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_EVENT_HIGHLIGHT",
+        "file": "images/color/ic_e_highlight.png",
+        "targetPlatforms": ["basalt"]
       },
       {
         "type": "png",
         "name": "IMAGE_LEAGUE",
-        "file": "images/ic_l.png"
+        "file": "images/bw/ic_l.png",
+        "targetPlatforms": ["aplite"]
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_LEAGUE",
+        "file": "images/color/ic_l.png",
+        "targetPlatforms": ["basalt"]
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_LEAGUE_HIGHLIGHT",
+        "file": "images/color/ic_l_highlight.png",
+        "targetPlatforms": ["basalt"]
       },
       {
         "type": "png",
         "name": "IMAGE_LOCKED",
-        "file": "images/ic_locked.png"
+        "file": "images/bw/ic_locked.png",
+        "targetPlatforms": ["aplite"]
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_LOCKED",
+        "file": "images/color/ic_locked.png",
+        "targetPlatforms": ["basalt"]
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_LOCKED_HIGHLIGHT",
+        "file": "images/color/ic_locked_highlight.png",
+        "targetPlatforms": ["basalt"]
       },
       {
         "type": "png",
         "name": "IMAGE_UNLOCKED",
-        "file": "images/ic_unlocked.png"
+        "file": "images/bw/ic_unlocked.png",
+        "targetPlatforms": ["aplite"]
       },
       {
         "type": "png",
-        "name": "IMAGE_LANE",
-        "file": "images/lane_background.png",
+        "name": "IMAGE_UNLOCKED",
+        "file": "images/color/ic_unlocked.png",
+        "targetPlatforms": ["basalt"]
+      },
+      {
+        "type": "png",
+        "name": "IMAGE_UNLOCKED_HIGHLIGHT",
+        "file": "images/color/ic_unlocked_highlight.png",
         "targetPlatforms": ["basalt"]
       }
     ]
