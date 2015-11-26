@@ -204,11 +204,14 @@ static void main_window_unload(Window *window) {
   menu_layer_destroy(s_menulayer_bowlers);
 
   gbitmap_destroy(s_bitmap_bowler_new);
-  gbitmap_destroy(s_bitmap_bowler_new_highlighted);
   gbitmap_destroy(s_bitmap_bowler);
-  gbitmap_destroy(s_bitmap_bowler_highlighted);
   gbitmap_destroy(s_bitmap_x);
-  gbitmap_destroy(s_bitmap_x_highlighted);
+
+  #ifdef PBL_COLOR
+    gbitmap_destroy(s_bitmap_bowler_new_highlighted);
+    gbitmap_destroy(s_bitmap_bowler_highlighted);
+    gbitmap_destroy(s_bitmap_x_highlighted);
+  #endif
 }
 
 /*

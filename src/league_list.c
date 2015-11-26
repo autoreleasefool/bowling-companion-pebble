@@ -209,13 +209,16 @@ static void main_window_unload(Window *window) {
   menu_layer_destroy(s_menulayer_leagues);
 
   gbitmap_destroy(s_bitmap_new);
-  gbitmap_destroy(s_bitmap_new_highlighted);
   gbitmap_destroy(s_bitmap_league);
-  gbitmap_destroy(s_bitmap_league_highlighted);
   gbitmap_destroy(s_bitmap_event);
-  gbitmap_destroy(s_bitmap_event_highlighted);
   gbitmap_destroy(s_bitmap_x);
-  gbitmap_destroy(s_bitmap_x_highlighted);
+
+  #ifdef PBL_COLOR
+    gbitmap_destroy(s_bitmap_new_highlighted);
+    gbitmap_destroy(s_bitmap_league_highlighted);
+    gbitmap_destroy(s_bitmap_event_highlighted);
+    gbitmap_destroy(s_bitmap_x_highlighted);
+  #endif
 }
 
 /*
