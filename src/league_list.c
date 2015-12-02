@@ -99,7 +99,7 @@ static char* get_row_title(uint16_t section_index, uint16_t row) {
 
 /*
  * If /section_index/ is 0, returns NULL. Else, if /section_index/ is 1, returns the average of the league
- * at /row/ as a string, and NULL if the bowler does not exist.
+ * at /row/ as a string, and NULL if the league does not exist.
  */
 static char* get_row_subtitle(uint16_t section_index, uint16_t row) {
   // TODO: return league/event average
