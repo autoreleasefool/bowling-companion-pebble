@@ -156,7 +156,7 @@ static void menu_draw_row_callback(GContext *ctx, const Layer *cell_layer, MenuI
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
   // TODO: show list of games for events/leagues with 2+ games
   // TODO: show only game for events/leagues with 1 game
-  show_games_list();
+  show_game_list();
 }
 
 /*
