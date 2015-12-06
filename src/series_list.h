@@ -15,7 +15,7 @@
  */
 
  /*
-  * Sets up the window for the leagues/events menu.
+  * Sets up the window for the series menu.
   */
 void show_series_list(void);
 

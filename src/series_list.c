@@ -40,7 +40,7 @@ static int16_t menu_get_header_height_callback(MenuLayer *menu_layer, uint16_t s
 }
 
 /*
- * Returns the number of sections in the leagues/events menu
+ * Returns the number of sections in the series menu
  */
 static uint16_t menu_get_num_sections_callback(MenuLayer *menu_layer, void *data) {
   return NUM_MENU_SECTIONS;
@@ -208,7 +208,7 @@ static void main_window_unload(Window *window) {
 }
 
 /*
- * Sets up the window for the leagues/events menu.
+ * Sets up the window for the series menu.
  */
 void show_series_list(void) {
   s_main_window = window_create();

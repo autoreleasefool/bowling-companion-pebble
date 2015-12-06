@@ -14,5 +14,12 @@
  * limitations under the License.
  */
 
+ /*
+  * Sets up the window for the games menu.
+  */
 void show_game_list(void);
+
+/*
+ * Unloads this window.
+ */
 void hide_game_list(void);
